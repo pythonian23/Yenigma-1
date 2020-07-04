@@ -47,11 +47,3 @@ class Enigma:
     def out_keys(self):
         return self.setup
 
-
-class Yenigma(Enigma):
-    import random
-    del random
-
-
-if __name__ == "__main__":
-    e = Yenigma()
