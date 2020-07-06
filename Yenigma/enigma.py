@@ -2,7 +2,7 @@ class Enigma:
     import random
 
     alpha = tuple("abcdefghijklmnopqrstuvwxyz")
-    setup = ([{}], {})
+    setup = ([[]], [])
 
     def __init__(self):
         self.gen_key(3, 100)
@@ -10,22 +10,24 @@ class Enigma:
     def gen_reflect(self, key):
         self.random.seed(key)
         tempAlpha = list(self.alpha)
-        output = {}
+        output = [0]*26
 
         for i in range(13):
-            temp = (tempAlpha.pop(self.random.randint(0, len(tempAlpha)-1)),
-                    tempAlpha.pop(self.random.randint(0, len(tempAlpha)-1)))
-            output[temp[0]] = temp[1]
-            output[temp[1]] = temp[0]
+            tempSet = (tempAlpha.pop(self.random.randint(0, 25-(i*2))), tempAlpha.pop(self.random.randint(0, 24-(i*2))))
+            output[self.alpha.index(tempSet[0])] = tempSet[1]
+            output[self.alpha.index(tempSet[1])] = tempSet[0]
+
         return output
 
     def gen_rotor(self, key):
         self.random.seed(key)
         tempAlpha = list(self.alpha)
-        output = {}
+        output = []
 
-        for keys in self.alpha:
-            output[keys] = tempAlpha.pop(self.random.randint(0, len(tempAlpha)-1))
+        for i in range(26):
+            tempSet = tempAlpha.pop(self.random.randint(0, 25 - i))
+            output.append(tempSet)
+
         return output
 
     def gen_key(self, length, lim, set_key=True):
@@ -46,4 +48,3 @@ class Enigma:
 
     def out_keys(self):
         return self.setup
-
