@@ -56,9 +56,16 @@ class Enigma:
         self.rot = [0]*len(self.setup[0])
         return
 
+    def rotation_check(self, index):
+        while (index != len(self.setup[0]) - 1) and (self.rot[index] >= 26):
+            self.rot[index] -= 26
+            self.rotate(index + 1)
+        return
+
     def rotate(self, index):
         self.setup[0][index].append(self.setup[0][index].pop(0))
         self.rot[index] += 1
+        self.rotation_check(index)
         return
 
     def set_rotation(self, key):
@@ -71,3 +78,18 @@ class Enigma:
         for rotor in range(len(base)):
             for iteration in range(base[rotor]):
                 self.setup[0][rotor].append(self.setup[0][rotor].pop(0))
+        return
+
+    def crypt(self, plaintext):
+        ciphertext = ""
+
+        for letter in plaintext:
+            current = self.alpha.index(letter)
+            for rotor in range(len(self.setup[0])):
+                current = self.alpha.index(self.setup[0][rotor][current])
+            current = self.alpha.index(self.setup[1][current])
+            for rotor in range((len(self.setup[0]) - 1), -1, -1):
+                current = self.setup[0][rotor].index(self.alpha[current])
+            ciphertext += self.alpha[current]
+        self.rotate(len(self.setup[0]) - 1)
+        return ciphertext
