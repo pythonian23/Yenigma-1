@@ -1,2 +1,2 @@
 # Yenigma
- An attempt to make the Enigma more secure
+ Making the Enigma more secure by removing the limitations of wiring.
