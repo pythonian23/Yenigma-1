@@ -18,33 +18,52 @@ class Yenigma(Enigma):
 
         return output
 
-    def crypt(self, plaintext):
-        pass
-
     def encrypt(self, plaintext):
         ciphertext = ""
+        through = False
 
         for letter in plaintext:
             current = self.alpha.index(letter)
+            try:
+                current = self.alpha.index(self.plugboard[self.alpha[current]])
+                through = True
+            except KeyError:
+                pass
             for rotor in range(len(self.setup[0])):
                 current = self.alpha.index(self.setup[0][rotor][current])
             current = self.alpha.index(self.setup[1][current])
             for rotor in range((len(self.setup[0]) - 1), -1, -1):
                 current = self.setup[0][rotor].index(self.alpha[current])
+            try:
+                current = self.alpha.index(self.plugboard[self.alpha[current]])
+            except KeyError:
+                pass
             ciphertext += self.alpha[current]
-        self.rotate(len(self.setup[0]) - 1)
-        return ciphertext  # plugboard check
+            if not through:
+                self.rotate(len(self.setup[0]) - 1)
+        return ciphertext
 
     def decrypt(self, ciphertext):
         plaintext = ""
+        through = False
 
         for letter in ciphertext:
             current = self.alpha.index(letter)
+            try:
+                current = self.alpha.index(self.plugboard[self.alpha[current]])
+            except KeyError:
+                pass
             for rotor in range(len(self.setup[0])):
                 current = self.alpha.index(self.setup[0][rotor][current])
             current = self.alpha.index(self.setup[1][current])
             for rotor in range((len(self.setup[0]) - 1), -1, -1):
                 current = self.setup[0][rotor].index(self.alpha[current])
+            try:
+                current = self.alpha.index(self.plugboard[self.alpha[current]])
+                through = True
+            except KeyError:
+                pass
             plaintext += self.alpha[current]
-        self.rotate(len(self.setup[0]) - 1)
-        return plaintext  # plugboard check
+            if not through:
+                self.rotate(len(self.setup[0]) - 1)
+        return plaintext

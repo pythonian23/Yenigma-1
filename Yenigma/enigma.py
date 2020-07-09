@@ -107,7 +107,7 @@ class Enigma:
             except KeyError:
                 pass
             ciphertext += self.alpha[current]
-        self.rotate(len(self.setup[0]) - 1)
+            self.rotate(len(self.setup[0]) - 1)
         return ciphertext
 
     def reset(self):
