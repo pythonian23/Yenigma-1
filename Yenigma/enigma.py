@@ -4,6 +4,7 @@ class Enigma:
     alpha = tuple("abcdefghijklmnopqrstuvwxyz")
     setup = ([[]], [])
     rot = []
+    plugboard = {}
 
     def __init__(self):
         self.gen_key(3, 100)
@@ -80,16 +81,37 @@ class Enigma:
                 self.setup[0][rotor].append(self.setup[0][rotor].pop(0))
         return
 
+    def set_plug(self, sets):
+        self.plugboard = {}
+        for pair in sets:
+            self.plugboard[pair[0]] = pair[1]
+            self.plugboard[pair[1]] = pair[0]
+        return self.plugboard
+
     def crypt(self, plaintext):
         ciphertext = ""
 
         for letter in plaintext:
             current = self.alpha.index(letter)
+            try:
+                current = self.alpha.index(self.plugboard[self.alpha[current]])
+            except KeyError:
+                pass
             for rotor in range(len(self.setup[0])):
                 current = self.alpha.index(self.setup[0][rotor][current])
             current = self.alpha.index(self.setup[1][current])
             for rotor in range((len(self.setup[0]) - 1), -1, -1):
                 current = self.setup[0][rotor].index(self.alpha[current])
+            try:
+                current = self.alpha.index(self.plugboard[self.alpha[current]])
+            except KeyError:
+                pass
             ciphertext += self.alpha[current]
         self.rotate(len(self.setup[0]) - 1)
         return ciphertext
+
+    def reset(self):
+        self.plugboard = {}
+        self.setup = [[], 0]
+        self.rot = 0
+        return
